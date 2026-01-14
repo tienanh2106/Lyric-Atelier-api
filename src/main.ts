@@ -11,7 +11,7 @@ async function bootstrap() {
 
   // Global prefix
   const apiPrefix = configService.get<string>('apiPrefix');
-  app.setGlobalPrefix(apiPrefix ?? 'api/v1');
+  app.setGlobalPrefix(apiPrefix ?? 'api');
 
   // Global validation pipe
   app.useGlobalPipes(

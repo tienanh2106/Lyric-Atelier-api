@@ -3,7 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class GenerationDataDto {
   @ApiProperty({
     description: 'Generated text content',
-    example: 'Code flows like a stream\nBugs hide in shadows deep\nDebug and deploy',
+    example:
+      'Code flows like a stream\nBugs hide in shadows deep\nDebug and deploy',
   })
   generatedText: string;
 
