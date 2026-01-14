@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
@@ -19,6 +20,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -54,16 +56,32 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Get all users',
-    description: 'Admin only - List all users',
+    description: 'Admin only - Get paginated list of users',
   })
   @ApiResponse({
     status: 200,
-    description: 'List of users',
-    type: [User],
+    description: 'Paginated list of users',
+    schema: {
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/User' },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            total: { type: 'number' },
+            totalPages: { type: 'number' },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.usersService.findAll(paginationDto);
   }
 
   @Get(':id')
