@@ -20,6 +20,7 @@ import { CreateCreditPackageDto } from './dto/create-credit-package.dto';
 import { PurchaseCreditsDto } from './dto/purchase-credits.dto';
 import { AdjustCreditsDto } from './dto/adjust-credits.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { CreditBalanceResponseDto } from './dto/credit-balance-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -27,6 +28,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { Role } from '../../common/enums/role.enum';
 import { User } from '../users/entities/user.entity';
+import { CreditPackage } from './entities/credit-package.entity';
 
 @ApiTags('Credits')
 @Controller('credits')
@@ -38,8 +40,12 @@ export class CreditsController {
   @Post('packages')
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create credit package (Admin only)' })
-  @ApiResponse({ status: 201, description: 'Package created successfully' })
+  @ApiOperation({ summary: 'Create credit package', description: 'Admin only' })
+  @ApiResponse({
+    status: 201,
+    description: 'Package created successfully',
+    type: CreditPackage,
+  })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
   createPackage(@Body() createPackageDto: CreateCreditPackageDto) {
     return this.creditsService.createPackage(createPackageDto);
@@ -47,16 +53,30 @@ export class CreditsController {
 
   @Get('packages')
   @Public()
-  @ApiOperation({ summary: 'Get all active credit packages' })
-  @ApiResponse({ status: 200, description: 'List of credit packages' })
+  @ApiOperation({
+    summary: 'Get all active credit packages',
+    description: 'Public endpoint - no authentication required',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of credit packages',
+    type: [CreditPackage],
+  })
   findAllPackages() {
     return this.creditsService.findAllPackages();
   }
 
   @Get('packages/:id')
   @Public()
-  @ApiOperation({ summary: 'Get credit package by ID' })
-  @ApiResponse({ status: 200, description: 'Credit package details' })
+  @ApiOperation({
+    summary: 'Get credit package by ID',
+    description: 'Public endpoint - no authentication required',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Credit package details',
+    type: CreditPackage,
+  })
   @ApiResponse({ status: 404, description: 'Package not found' })
   findPackage(@Param('id') id: string) {
     return this.creditsService.findPackage(id);
@@ -100,16 +120,48 @@ export class CreditsController {
 
   @Get('balance')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get credit balance' })
-  @ApiResponse({ status: 200, description: 'Credit balance retrieved' })
+  @ApiOperation({
+    summary: 'Get credit balance',
+    description: 'Get current credit balance and summary',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Credit balance retrieved',
+    type: CreditBalanceResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getCreditBalance(@CurrentUser() user: User) {
     return this.creditsService.getCreditBalance(user.id);
   }
 
   @Get('ledger')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get credit ledger history' })
-  @ApiResponse({ status: 200, description: 'Ledger history retrieved' })
+  @ApiOperation({
+    summary: 'Get credit ledger history',
+    description: 'Get paginated credit ledger entries (audit trail)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Ledger history retrieved',
+    schema: {
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/CreditLedger' },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            total: { type: 'number' },
+            totalPages: { type: 'number' },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getLedgerHistory(
     @CurrentUser() user: User,
     @Query() paginationDto: PaginationDto,
@@ -119,8 +171,32 @@ export class CreditsController {
 
   @Get('transactions')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get credit transaction history' })
-  @ApiResponse({ status: 200, description: 'Transaction history retrieved' })
+  @ApiOperation({
+    summary: 'Get credit transaction history',
+    description: 'Get paginated credit purchase transactions',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Transaction history retrieved',
+    schema: {
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/CreditTransaction' },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            total: { type: 'number' },
+            totalPages: { type: 'number' },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getTransactionHistory(
     @CurrentUser() user: User,
     @Query() paginationDto: PaginationDto,

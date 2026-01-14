@@ -37,6 +37,10 @@ lerna-debug.log*
 # Environment variables
 .env
 
+# Database migrations
+src/database/migrations/*.ts
+!src/database/migrations/.gitkeep
+
 # Temp files
 *.swp
 *.swo

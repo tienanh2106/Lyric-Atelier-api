@@ -13,7 +13,9 @@ export default () => ({
 
   jwt: {
     secret: process.env.JWT_SECRET,
-    expiresIn: process.env.JWT_EXPIRATION || '1d',
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRATION || '10m',
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRATION || '1d',
   },
 
   genai: {

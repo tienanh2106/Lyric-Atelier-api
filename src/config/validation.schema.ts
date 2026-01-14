@@ -14,7 +14,9 @@ export const validationSchema = Joi.object({
   DB_DATABASE: Joi.string().required(),
 
   JWT_SECRET: Joi.string().required(),
-  JWT_EXPIRATION: Joi.string().required(),
+  JWT_ACCESS_EXPIRATION: Joi.string().required(),
+  JWT_REFRESH_SECRET: Joi.string().required(),
+  JWT_REFRESH_EXPIRATION: Joi.string().required(),
 
   GOOGLE_GENAI_API_KEY: Joi.string().required(),
 
