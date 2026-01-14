@@ -1,0 +1,7 @@
+export enum CreditTransactionType {
+  PURCHASE = 'PURCHASE',
+  USAGE = 'USAGE',
+  EXPIRATION = 'EXPIRATION',
+  REFUND = 'REFUND',
+  ADMIN_ADJUSTMENT = 'ADMIN_ADJUSTMENT',
+}
