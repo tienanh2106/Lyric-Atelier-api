@@ -36,6 +36,7 @@ export class CreateUserDto {
   @ApiPropertyOptional({
     description: 'User role',
     enum: Role,
+    enumName: 'Role',
     example: Role.USER,
     default: Role.USER,
   })

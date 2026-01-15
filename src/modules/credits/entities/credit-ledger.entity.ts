@@ -30,6 +30,7 @@ export class CreditLedger {
   @ApiProperty({
     description: 'Transaction type',
     enum: CreditTransactionType,
+    enumName: 'CreditTransactionType',
     example: CreditTransactionType.PURCHASE,
   })
   @Column({

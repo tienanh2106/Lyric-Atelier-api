@@ -24,6 +24,7 @@ export class GenAIController {
 
   @Post('generate')
   @ApiOperation({
+    operationId: 'generateContent',
     summary: 'Generate content using AI',
     description:
       'Generate text content using Google GenAI. Credits will be deducted based on token usage.',
@@ -47,6 +48,7 @@ export class GenAIController {
 
   @Get('cost-estimate')
   @ApiOperation({
+    operationId: 'estimateCost',
     summary: 'Estimate credit cost for generation',
     description: 'Get an estimate of credits needed for a given prompt',
   })

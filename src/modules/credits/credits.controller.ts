@@ -21,6 +21,8 @@ import { PurchaseCreditsDto } from './dto/purchase-credits.dto';
 import { AdjustCreditsDto } from './dto/adjust-credits.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { CreditBalanceResponseDto } from './dto/credit-balance-response.dto';
+import { PaginatedLedgerResponseDto } from './dto/paginated-ledger-response.dto';
+import { PaginatedTransactionResponseDto } from './dto/paginated-transaction-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -40,7 +42,11 @@ export class CreditsController {
   @Post('packages')
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create credit package', description: 'Admin only' })
+  @ApiOperation({
+    operationId: 'createCreditPackage',
+    summary: 'Create credit package',
+    description: 'Admin only',
+  })
   @ApiResponse({
     status: 201,
     description: 'Package created successfully',
@@ -54,6 +60,7 @@ export class CreditsController {
   @Get('packages')
   @Public()
   @ApiOperation({
+    operationId: 'getCreditPackages',
     summary: 'Get all active credit packages',
     description: 'Public endpoint - no authentication required',
   })
@@ -69,6 +76,7 @@ export class CreditsController {
   @Get('packages/:id')
   @Public()
   @ApiOperation({
+    operationId: 'getCreditPackage',
     summary: 'Get credit package by ID',
     description: 'Public endpoint - no authentication required',
   })
@@ -85,7 +93,10 @@ export class CreditsController {
   @Patch('packages/:id')
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update credit package (Admin only)' })
+  @ApiOperation({
+    operationId: 'updateCreditPackage',
+    summary: 'Update credit package (Admin only)',
+  })
   @ApiResponse({ status: 200, description: 'Package updated successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
   updatePackage(
@@ -98,7 +109,10 @@ export class CreditsController {
   @Delete('packages/:id')
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete credit package (Admin only)' })
+  @ApiOperation({
+    operationId: 'deleteCreditPackage',
+    summary: 'Delete credit package (Admin only)',
+  })
   @ApiResponse({ status: 200, description: 'Package deleted successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
   deletePackage(@Param('id') id: string) {
@@ -108,7 +122,10 @@ export class CreditsController {
   // User Operations
   @Post('purchase')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Purchase credits' })
+  @ApiOperation({
+    operationId: 'purchaseCredits',
+    summary: 'Purchase credits',
+  })
   @ApiResponse({ status: 201, description: 'Credits purchased successfully' })
   @ApiResponse({ status: 404, description: 'Package not found' })
   purchaseCredits(
@@ -121,6 +138,7 @@ export class CreditsController {
   @Get('balance')
   @ApiBearerAuth()
   @ApiOperation({
+    operationId: 'getCreditBalance',
     summary: 'Get credit balance',
     description: 'Get current credit balance and summary',
   })
@@ -137,29 +155,14 @@ export class CreditsController {
   @Get('ledger')
   @ApiBearerAuth()
   @ApiOperation({
+    operationId: 'getCreditLedger',
     summary: 'Get credit ledger history',
     description: 'Get paginated credit ledger entries (audit trail)',
   })
   @ApiResponse({
     status: 200,
     description: 'Ledger history retrieved',
-    schema: {
-      properties: {
-        data: {
-          type: 'array',
-          items: { $ref: '#/components/schemas/CreditLedger' },
-        },
-        meta: {
-          type: 'object',
-          properties: {
-            page: { type: 'number' },
-            limit: { type: 'number' },
-            total: { type: 'number' },
-            totalPages: { type: 'number' },
-          },
-        },
-      },
-    },
+    type: PaginatedLedgerResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getLedgerHistory(
@@ -172,29 +175,14 @@ export class CreditsController {
   @Get('transactions')
   @ApiBearerAuth()
   @ApiOperation({
+    operationId: 'getCreditTransactions',
     summary: 'Get credit transaction history',
     description: 'Get paginated credit purchase transactions',
   })
   @ApiResponse({
     status: 200,
     description: 'Transaction history retrieved',
-    schema: {
-      properties: {
-        data: {
-          type: 'array',
-          items: { $ref: '#/components/schemas/CreditTransaction' },
-        },
-        meta: {
-          type: 'object',
-          properties: {
-            page: { type: 'number' },
-            limit: { type: 'number' },
-            total: { type: 'number' },
-            totalPages: { type: 'number' },
-          },
-        },
-      },
-    },
+    type: PaginatedTransactionResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getTransactionHistory(
@@ -208,7 +196,10 @@ export class CreditsController {
   @Post('admin/adjust')
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Adjust user credits (Admin only)' })
+  @ApiOperation({
+    operationId: 'adjustCredits',
+    summary: 'Adjust user credits (Admin only)',
+  })
   @ApiResponse({ status: 200, description: 'Credits adjusted successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
   adjustCredits(@Body() adjustDto: AdjustCreditsDto) {

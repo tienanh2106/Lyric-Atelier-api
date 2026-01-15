@@ -21,6 +21,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedUsersResponseDto } from './dto/paginated-users-response.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -38,6 +39,7 @@ export class UsersController {
   @Post()
   @Roles(Role.ADMIN)
   @ApiOperation({
+    operationId: 'createUser',
     summary: 'Create new user',
     description: 'Admin only - Create a new user account',
   })
@@ -55,29 +57,14 @@ export class UsersController {
   @Get()
   @Roles(Role.ADMIN)
   @ApiOperation({
+    operationId: 'getUsers',
     summary: 'Get all users',
     description: 'Admin only - Get paginated list of users',
   })
   @ApiResponse({
     status: 200,
     description: 'Paginated list of users',
-    schema: {
-      properties: {
-        data: {
-          type: 'array',
-          items: { $ref: '#/components/schemas/User' },
-        },
-        meta: {
-          type: 'object',
-          properties: {
-            page: { type: 'number' },
-            limit: { type: 'number' },
-            total: { type: 'number' },
-            totalPages: { type: 'number' },
-          },
-        },
-      },
-    },
+    type: PaginatedUsersResponseDto,
   })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
   findAll(@Query() paginationDto: PaginationDto) {
@@ -87,6 +74,7 @@ export class UsersController {
   @Get(':id')
   @Roles(Role.ADMIN)
   @ApiOperation({
+    operationId: 'getUser',
     summary: 'Get user by ID',
     description: 'Admin only - Get user details',
   })
@@ -104,6 +92,7 @@ export class UsersController {
   @Patch(':id')
   @Roles(Role.ADMIN)
   @ApiOperation({
+    operationId: 'updateUser',
     summary: 'Update user',
     description: 'Admin only - Update user information',
   })
@@ -121,6 +110,7 @@ export class UsersController {
   @Delete(':id')
   @Roles(Role.ADMIN)
   @ApiOperation({
+    operationId: 'deleteUser',
     summary: 'Delete user',
     description: 'Admin only - Delete user account',
   })

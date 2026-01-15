@@ -40,6 +40,7 @@ export class User {
   @ApiProperty({
     description: 'User role',
     enum: Role,
+    enumName: 'Role',
     example: Role.USER,
   })
   @Column({

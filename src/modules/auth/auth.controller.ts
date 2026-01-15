@@ -32,6 +32,7 @@ export class AuthController {
   @Public()
   @Post('register')
   @ApiOperation({
+    operationId: 'register',
     summary: 'Register a new user',
     description: 'Create a new user account with email and password',
   })
@@ -49,6 +50,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @ApiOperation({
+    operationId: 'login',
     summary: 'Login user',
     description: 'Authenticate user and get access token',
   })
@@ -67,6 +69,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
+    operationId: 'getMe',
     summary: 'Get current user profile',
     description: 'Get authenticated user profile',
   })
@@ -83,6 +86,7 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @ApiOperation({
+    operationId: 'refreshToken',
     summary: 'Refresh access token',
     description: 'Exchange refresh token for new access and refresh tokens',
   })
@@ -99,6 +103,7 @@ export class AuthController {
   @Public()
   @Post('logout')
   @ApiOperation({
+    operationId: 'logout',
     summary: 'Logout user',
     description: 'Revoke refresh token to logout user',
   })

@@ -9,6 +9,7 @@ export class AppController {
 
   @Get()
   @ApiOperation({
+    operationId: 'healthCheck',
     summary: 'Health check',
     description: 'Check if the API is running',
   })
