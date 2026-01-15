@@ -22,4 +22,8 @@ export const validationSchema = Joi.object({
 
   DEFAULT_CREDIT_VALIDITY_DAYS: Joi.number().default(90),
   CREDIT_COST_PER_TOKEN: Joi.number().default(0.01),
+
+  GCS_PROJECT_ID: Joi.string().optional().allow('', null),
+  GCS_BUCKET_NAME: Joi.string().optional().allow('', null),
+  GCS_KEY_FILENAME: Joi.string().optional().allow('', null),
 });

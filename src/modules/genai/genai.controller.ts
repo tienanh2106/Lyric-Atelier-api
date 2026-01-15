@@ -7,6 +7,8 @@ import {
 } from '@nestjs/swagger';
 import { GenAIService } from './genai.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
+import { SuggestScenarioDto } from './dto/suggest-scenario.dto';
+import { MediaToTextDto } from './dto/media-to-text.dto';
 import {
   GenerationResponseDto,
   CostEstimationDto,
@@ -63,5 +65,50 @@ export class GenAIController {
     @Query('maxTokens') maxTokens?: number,
   ) {
     return this.genAIService.estimateCost(prompt, maxTokens);
+  }
+
+  @Post('suggest-scenario')
+  @ApiOperation({
+    operationId: 'suggestScenario',
+    summary: 'Suggest AI generation scenarios',
+    description:
+      'Propose creative scenarios/ideas based on user prompt. Credits will be deducted based on token usage.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Scenarios suggested successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid prompt',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  suggestScenario(
+    @CurrentUser() user: User,
+    @Body() suggestDto: SuggestScenarioDto,
+  ) {
+    return this.genAIService.suggestScenario(user.id, suggestDto);
+  }
+
+  @Post('media-to-text')
+  @ApiOperation({
+    operationId: 'mediaToText',
+    summary: 'Convert audio/video to text',
+    description:
+      'Convert audio or video file to text using AI. Supports transcription with custom prompts. Credits will be deducted based on token usage.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Media transcribed successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid media URL',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  mediaToText(@CurrentUser() user: User, @Body() mediaDto: MediaToTextDto) {
+    return this.genAIService.mediaToText(user.id, mediaDto);
   }
 }

@@ -29,4 +29,10 @@ export default () => ({
     ),
     costPerToken: parseFloat(process.env.CREDIT_COST_PER_TOKEN ?? '0.01'),
   },
+
+  storage: {
+    projectId: process.env.GCS_PROJECT_ID,
+    bucketName: process.env.GCS_BUCKET_NAME,
+    keyFilename: process.env.GCS_KEY_FILENAME,
+  },
 });
